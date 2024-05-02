@@ -1,6 +1,6 @@
 import aiohttp
 from datetime import datetime
-
+import requests
 
 base_url = "http://127.0.0.1:8000"
 
@@ -9,10 +9,10 @@ async def get_texts():
         async with session.get(f"{base_url}/text/") as response:
             return await response.json()     
         
-async def get_buttons():
-    async with aiohttp.ClientSession() as session:
-        async with session.get(f"{base_url}/button/") as response:
-            return await response.json()
+def get_buttons():
+    response = requests.get(f"{base_url}/button/")
+    return response.json()
+        
 
 async def get_agent_by_id(id):
     async with aiohttp.ClientSession() as session:

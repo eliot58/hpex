@@ -18,12 +18,15 @@ iso8601==1.1.0
 magic-filter==1.0.12
 multidict==6.0.5
 openpyxl==3.1.2
+pillow==10.3.0
 pydantic==2.7.0
 pydantic_core==2.18.1
 pypika-tortoise==0.1.6
 python-dotenv==1.0.1
 pytz==2024.1
+requests==2.31.0
 tomlkit==0.12.4
 tortoise-orm==0.20.0
 typing_extensions==4.11.0
+urllib3==2.2.1
 yarl==1.9.4
