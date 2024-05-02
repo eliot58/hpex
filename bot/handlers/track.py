@@ -34,7 +34,7 @@ async def items_upload(message: types.Message, state: FSMContext):
             if len(check_caption) == 2:
                 track_code, quantity = check_caption
 
-                if quantity.is_digit():
+                if quantity.isdigit():
                     photo = await photo_message.photo[-1].download()
 
                     products.append([photo.name, track_code, int(quantity)])

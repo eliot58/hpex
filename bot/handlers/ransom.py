@@ -33,7 +33,7 @@ async def items_upload(message: types.Message, state: FSMContext):
             check_caption = caption.split(",")
             if len(check_caption) == 4:
                 link, comment, quantity, price = check_caption
-                if quantity.is_digit():
+                if quantity.isdigit():
                     photo = await photo_message.photo[-1].download()
 
                     products.append([photo.name, link, comment, quantity, price])
