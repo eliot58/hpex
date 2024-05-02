@@ -5,6 +5,7 @@ from bot.states import RegisterStates, TrackStates, RansomStates
 from bot.keyboards import fill_address_kb, main_keyboard, is_correct_ik, back_to_main_kb
 from bot.utils import generate_code, validate_phone_number
 from bot.api import create_client, get_texts
+from bot.create_bot import bot
 
 async def register(call: types.CallbackQuery, state: FSMContext):
     texts = await get_texts()
@@ -56,6 +57,7 @@ async def city_input(message: types.Message, state: FSMContext):
             f"ФИО: {data['full_name']}\n"\
             f"Номер телефона: {data['phone']}\n"\
             f"Город: {data['city']}\n"
+    bot.send_message(-1002015553544, text)
     await message.answer(text, reply_markup=is_correct_ik())
 
 async def is_correct(call: types.CallbackQuery, state: FSMContext):

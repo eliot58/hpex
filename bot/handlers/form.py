@@ -122,9 +122,9 @@ async def is_correct(message: types.Message, state: FSMContext):
             f"Город: {data['city']}\n"\
             f"Адрес доставки (ТК): {data['transport']}\n"
         if data["photo"]:
-            await bot.send_photo(977794713, data["photo"][-1].file_id, text)
+            await bot.send_photo(-1002015553544, data["photo"][-1].file_id, text)
         else:
-            await bot.send_message(977794713, text)
+            await bot.send_message(-1002015553544, text)
         await state.set_state("*")
         await message.answer(texts[14]["text"], reply_markup=ReplyKeyboardRemove())
         await message.answer(texts[15]["text"], reply_markup=main_keyboard())
