@@ -5,27 +5,26 @@ from bot.states import TrackStates
 from bot.keyboards import table_keyboard, main_keyboard
 from bot.utils import validate_code
 from bot.table import generate_track
-from bot.api import get_client, get_agent_by_code, create_track
+from bot.api import get_client, get_agent_by_code, create_track, get_texts
 from aiogram.types import InputFile
 
 
 async def code_input(message: types.Message, state: FSMContext):
+    texts = await get_texts()
     if validate_code(message.text):
         client = (await get_client("KF-"+message.text)) or (await get_agent_by_code("KF-"+message.text))
         if client:
             await state.update_data(client_code=message.text)
             await state.set_state(TrackStates.items_upload)
-            await message.answer("Теперь отправьте фото в формате: ФОТО + ПОДПИСЬ (Трек_код.количество). Пример подписи: 7212.3")
+            await message.answer(texts[32]["text"])
         else:
-            await message.answer(
-                "Ваш клиентский код не найден, введите пожалуйста клиентский код:")
+            await message.answer(texts[24]["text"])
     else:
-        await message.answer(
-            "Код клиента должен начинаться с двух латинских букв, за которыми следуют четыре цифры. "
-            "Пожалуйста, введите код еще раз.")
+        await message.answer(texts[25]["text"])
 
 
 async def items_upload(message: types.Message, state: FSMContext):
+    texts = await get_texts()
     data = await state.get_data()
     products = data.get('products', [])
     async def process_photo(photo_message):
@@ -39,13 +38,12 @@ async def items_upload(message: types.Message, state: FSMContext):
                 products.append([photo.name, track_code, int(quantity)])
                 await state.update_data(products=products,
                                         count=data.get('count', 0) + 1)
-                await message.answer('Фото сохранено успешно. Если нужно больше фото, то отправьте фото с подписью. '
+                await message.answer(f'Товар #{data.get("count", 0)} успешно сохранён. Если нужно больше фото, то отправьте фото с подписью. '
                                      'Либо нажмите на кнопку, чтобы сформировать эксель документ', reply_markup=table_keyboard())
             else:
-                await message.answer('Вы отправили некорректную подпись к фото. Пожалуйста отправьте фото с корректной '
-                                     'подписью!')
+                await message.answer(texts[26]["text"])
         else:
-            await message.answer('Вы отправили фото без подписи')
+            await message.answer(texts[27]["text"])
 
 
     if message.photo:
@@ -53,13 +51,14 @@ async def items_upload(message: types.Message, state: FSMContext):
     elif message.document and message.document.mime_type.startswith('image/'):
         await process_photo(message)
     else:
-        await message.answer('Отправлен некорректный тип данных. Пожалуйста, отправьте фото с правильной подписью')
+        await message.answer(texts[28]["text"])
 
 
 async def get_table(call: types.CallbackQuery, state: FSMContext):
+    texts = await get_texts()
     data = await state.get_data()
     if data.get('count'):
-        await call.message.answer('Формирую эксель таблицу. Ожидайте.')
+        await call.message.answer(texts[29]["text"])
 
         table = generate_track(data["client_code"], data["products"])
 
@@ -68,12 +67,11 @@ async def get_table(call: types.CallbackQuery, state: FSMContext):
         await call.message.answer_document(InputFile(table))
 
 
-        await call.message.answer('Теперь можете воспользоваться другими функциями бота',
+        await call.message.answer(texts[30]["text"],
                                 reply_markup=main_keyboard())
         await state.reset_state()
     else:
-        await call.message.answer('Для того чтобы сформировать эксель, отправьте минимум одно фото '
-                                'с корректной подписью: ')
+        await call.message.answer(texts[31]["text"])
         
 async def delete_item(call: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()

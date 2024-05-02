@@ -5,29 +5,26 @@ from bot.states import RansomStates
 from bot.keyboards import table_keyboard, main_keyboard
 from bot.utils import validate_code
 from bot.table import generate_ransom
-from bot.api import get_client, get_agent_by_code, create_ransom
+from bot.api import get_client, get_agent_by_code, create_ransom, get_texts
 from aiogram.types import InputFile
 
 
 async def code_input(message: types.Message, state: FSMContext):
+    texts = await get_texts()
     if validate_code(message.text):
         client = (await get_client("KF-"+message.text)) or (await get_agent_by_code("KF-"+message.text))
         if client:
             await state.update_data(client_code=message.text)
             await state.set_state(RansomStates.items_upload)
-            await message.answer('Теперь отправьте фото в формате: ФОТО + ПОДПИСЬ '
-                                 '(ссылка на товар,комментарий,количество,цена). '
-                                 'Пример подписи: https://url.com,белого цвета,4,4.5')
+            await message.answer(texts[23]["text"])
         else:
-            await message.answer(
-                "Ваш клиентский код не найден, введите пожалуйста клиентский код:")
+            await message.answer(texts[24]["text"])
     else:
-        await message.answer(
-            "Код клиента должен начинаться с двух латинских букв, за которыми следуют четыре цифры. "
-            "Пожалуйста, введите код еще раз.")
+        await message.answer(texts[25]["text"])
 
 
 async def items_upload(message: types.Message, state: FSMContext):
+    texts = await get_texts()
     data = await state.get_data()
     products = data.get('products', [])
     async def process_photo(photo_message):
@@ -41,13 +38,12 @@ async def items_upload(message: types.Message, state: FSMContext):
                 products.append([photo.name, link, comment, quantity, price])
                 await state.update_data(products=products,
                                         count=data.get('count', 0) + 1)
-                await message.answer('Фото сохранено успешно. Если нужно больше фото, то отправьте фото с подписью. '
+                await message.answer(f'Товар #{data.get("count", 0)} успешно сохранён. Если нужно больше фото, то отправьте фото с подписью. '
                                      'Либо нажмите на кнопку, чтобы сформировать эксель документ', reply_markup=table_keyboard())
             else:
-                await message.answer('Вы отправили некорректную подпись к фото. Пожалуйста отправьте фото с корректной '
-                                     'подписью!')
+                await message.answer(texts[26]["text"])
         else:
-            await message.answer('Вы отправили фото без подписи')
+            await message.answer(texts[27]["text"])
 
 
     if message.photo:
@@ -55,13 +51,14 @@ async def items_upload(message: types.Message, state: FSMContext):
     elif message.document and message.document.mime_type.startswith('image/'):
         await process_photo(message)
     else:
-        await message.answer('Отправлен некорректный тип данных. Пожалуйста, отправьте фото с правильной подписью')
+        await message.answer(texts[28]["text"])
 
 
 async def get_table(call: types.CallbackQuery, state: FSMContext):
+    texts = await get_texts()
     data = await state.get_data()
     if data.get('count'):
-        await call.message.answer('Формирую эксель таблицу. Ожидайте.')
+        await call.message.answer(texts[29]["text"])
 
         table = generate_ransom(data["client_code"], data["products"])
 
@@ -70,12 +67,11 @@ async def get_table(call: types.CallbackQuery, state: FSMContext):
         await call.message.answer_document(InputFile(table))
 
 
-        await call.message.answer('Теперь можете воспользоваться другими функциями бота',
+        await call.message.answer(texts[30]["text"],
                                 reply_markup=main_keyboard())
         await state.reset_state()
     else:
-        await call.message.answer('Для того чтобы сформировать эксель, отправьте минимум одно фото '
-                                'с корректной подписью: ')
+        await call.message.answer(texts[31]["text"])
         
 async def delete_item(call: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
@@ -106,7 +102,6 @@ async def delete_input(message: types.Message, state: FSMContext):
                              f"чем 0 и меньше или равным {len(products)}")
 
 def register_ransom(dp: Dispatcher):
-
     dp.register_message_handler(code_input, commands=None, content_types=types.ContentTypes.TEXT, state=RansomStates.code_input)
     dp.register_message_handler(items_upload, commands=None, content_types=types.ContentTypes.PHOTO, state=RansomStates.items_upload)
     dp.register_callback_query_handler(get_table, cb_main.filter(action="get_table"), state=RansomStates.items_upload)

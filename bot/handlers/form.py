@@ -4,61 +4,68 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import ReplyKeyboardRemove
 from bot.keyboards import phone_tied_kb, is_correct_rb, qr_code_kb, main_keyboard
 from bot.create_bot import bot
-from bot.api import create_agent
+from bot.api import create_agent, get_texts
 from bot.utils import generate_code, is_valid_date, validate_phone_number
 
 
 async def full_name_input(message: types.Message, state: FSMContext):
     await state.update_data(full_name=message.text)
     await state.set_state(FormStates.date_of_birth_input)
-    await message.answer("Введите дату рождения (24.06.1996): ")
+    texts = await get_texts()
+    await message.answer(texts[5]["text"])
 
 async def date_input(message: types.Message, state: FSMContext):
+    texts = await get_texts()
     if is_valid_date(message.text):
         await state.update_data(date_of_birth=message.text)
         await state.set_state(FormStates.phone_input)
-        await message.answer("Введите контактный номер телефона получателя (+7915789504, 8915789504)")
+        await message.answer(texts[6]["text"])
     else:
-        await message.answer("Введите корректную дату (24.06.1996): ")
+        await message.answer(texts[7]["text"])
 
 async def phone_input(message: types.Message, state: FSMContext):
+    texts = await get_texts()
     if validate_phone_number(message.text):
         await state.update_data(phone=message.text)
         await state.set_state(FormStates.phone_tied)
         await message.answer(f"Номер телефона {message.text} привязан к телеграмму получателя?", reply_markup=phone_tied_kb())
     else:
-        await message.answer("Введите корректный номер телефона (+7915789504, 8915789504)")
+        await message.answer(texts[8]["text"])
 
 async def phone_tied(message: types.Message, state: FSMContext):
+    texts = await get_texts()
     if message.text == "Привязан":
         await state.update_data(username=None)
         await state.set_state(FormStates.city_input)
-        await message.answer(f"В какой город хотите доставлять грузы?", reply_markup=ReplyKeyboardRemove())
+        await message.answer(texts[9]["text"], reply_markup=ReplyKeyboardRemove())
     elif message.text == "Не привязан":
         await state.set_state(FormStates.username_input)
-        text = f'Пожалуйста, отправьте номер телефона, который привязан к телеграмму получателя или отправьте ' \
-               f'телеграмм логин получатель в таком формате: "@yakvenalexx": '
+        text = texts[10]["text"]
         await message.answer(text, reply_markup=ReplyKeyboardRemove())
 
 
 async def username_input(message: types.Message, state: FSMContext):
+    texts = await get_texts()
     await state.update_data(username=message.text)
     await state.set_state(FormStates.city_input)
-    await message.answer(f"В какой город хотите доставлять грузы?")
+    await message.answer(texts[9]["text"])
 
 
 async def city_input(message: types.Message, state: FSMContext):
+    texts = await get_texts()
     await state.update_data(city=message.text)
     await state.set_state(FormStates.transport_input)
-    await message.answer(f"🚚 Какой транспортной компанией хотите получать грузы? (Укажите минимум 2 транспортных компании в формате: Название ТК + Адрес склада в вашем городе)")
+    await message.answer(texts[11]["text"])
 
 
 async def transport_input(message: types.Message, state: FSMContext):
+    texts = await get_texts()
     await state.update_data(transport=message.text)
     await state.set_state(FormStates.qr_code_input)
-    await message.answer(f"Отправьте ваш QR код Alipay (Если он есть)", reply_markup=qr_code_kb())
+    await message.answer(texts[12]["text"], reply_markup=qr_code_kb())
 
 async def upload_photo(message: types.Message, state: FSMContext):
+    texts = await get_texts()
     await state.update_data(photo=message.photo)
     await state.update_data(code="KF-"+generate_code())
     await state.set_state(FormStates.submit_form)
@@ -71,11 +78,12 @@ async def upload_photo(message: types.Message, state: FSMContext):
         f"Телеграмм: {data['username'] if data['username'] else data['phone']}\n"\
         f"Город: {data['city']}\n"\
         f"Адрес доставки (ТК): {data['transport']}\n"
-    await message.answer("Всё ли верно?")
+    await message.answer(texts[13]["text"])
     await message.answer_photo(photo=data["photo"][-1].file_id, caption = text, reply_markup=is_correct_rb())
 
 
 async def not_qr_code(message: types.Message, state: FSMContext):
+    texts = await get_texts()
     await state.update_data(photo=None)
     await state.update_data(code="KF-"+generate_code())
     await state.set_state(FormStates.submit_form)
@@ -88,10 +96,11 @@ async def not_qr_code(message: types.Message, state: FSMContext):
         f"Телеграмм: {data['username'] if data['username'] else data['phone']}\n"\
         f"Город: {data['city']}\n"\
         f"Адрес доставки (ТК): {data['transport']}\n"
-    await message.answer("Всё ли верно?")
+    await message.answer(texts[13]["text"])
     await message.answer(text, reply_markup=is_correct_rb())
 
 async def is_correct(message: types.Message, state: FSMContext):
+    texts = await get_texts()
     if message.text == "Всё верно":
         data = await state.get_data()
 
@@ -117,11 +126,11 @@ async def is_correct(message: types.Message, state: FSMContext):
         else:
             await bot.send_message(977794713, text)
         await state.set_state("*")
-        await message.answer("Данные успешно сохранены!", reply_markup=ReplyKeyboardRemove())
-        await message.answer("Спасибо за то что прошли простую анкету. Теперь вам доступен весь функционал пользования ботом!", reply_markup=main_keyboard())
+        await message.answer(texts[14]["text"], reply_markup=ReplyKeyboardRemove())
+        await message.answer(texts[15]["text"], reply_markup=main_keyboard())
     elif message.text == "Нет исправить":
         await state.set_state(FormStates.full_name_input)
-        await message.answer("Скрипт сброшен! Для начала введите свои данные ФИО или данные получателя:", reply_markup=ReplyKeyboardRemove())
+        await message.answer(texts[16]["text"], reply_markup=ReplyKeyboardRemove())
 
 
 def register_form(dp: Dispatcher):

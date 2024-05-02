@@ -10,21 +10,19 @@ import asyncio
 
 async def cmd_start(message: types.Message, state: FSMContext):
     agent = await get_agent_by_id(message.chat.id)
-
+    texts = await get_texts()
     if not agent:
         await state.set_state(FormStates.full_name_input)
-        text = 'Для пользования ботом необходимо пройти простую регистрацию. Для этого нужно последовательно ответить ' \
-                'на несколько вопросов нашего бота.\n\nДля начала введите свои данные ФИО или данные получателя: '
+        text = texts[4]["text"]
         await message.answer(text)
     else:
-        start_texts = await get_texts()
         await state.set_state("*")
-        for text in start_texts[:-1]:
+        for text in texts[:3]:
             await message.answer(text["text"])
             await bot.send_chat_action(message.chat.id, 'typing')
             await asyncio.sleep(uniform(1, 3))
 
-        fin_text = start_texts[-1]["text"]
+        fin_text = texts[3]["text"]
         await message.answer(fin_text, reply_markup=main_keyboard())
 
 

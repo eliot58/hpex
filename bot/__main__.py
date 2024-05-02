@@ -8,6 +8,7 @@ from bot.handlers.form import register_form
 from bot.handlers.main_handlers import register_main
 from bot.handlers.track import register_track
 from bot.handlers.ransom import register_ransom
+from bot.handlers.address import register_address
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -28,6 +29,7 @@ async def main():
     register_main(dp)
     register_track(dp)
     register_ransom(dp)
+    register_address(dp)
 
 
     await dp.start_polling()

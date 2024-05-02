@@ -9,6 +9,10 @@ async def get_texts():
         async with session.get(f"{base_url}/text/") as response:
             return await response.json()     
         
+async def get_buttons():
+    async with aiohttp.ClientSession() as session:
+        async with session.get(f"{base_url}/button/") as response:
+            return await response.json()
 
 async def get_agent_by_id(id):
     async with aiohttp.ClientSession() as session:
