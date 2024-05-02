@@ -10,8 +10,12 @@ def generate_track(client_code, products):
 
     row_index = 10
 
+    quantity_sum = 0
+
     for product in products:
         photo_patch, trek_code, quantity = product
+
+        quantity_sum += quantity
 
         quantity_cell = sheet[f'D{row_index}']
         quantity_cell.value = quantity
@@ -31,6 +35,8 @@ def generate_track(client_code, products):
         trek_code_cell.value = trek_code
         row_index += 1
 
+    sheet["D9"].value = str(quantity_sum)
+
     name = os.path.join("tables", f'{client_code}.xlsx')
     wb.save(name)
     return name
@@ -48,8 +54,12 @@ def generate_ransom(client_code, products):
 
     row_index = 10
 
+    quantity_sum = 0
+
     for product in products:
         photo_patch, link, comment, quantity, price = product
+
+        quantity_sum += quantity
 
         quantity_cell = sheet[f'E{row_index}']
         quantity_cell.value = quantity
@@ -70,6 +80,9 @@ def generate_ransom(client_code, products):
         sheet[f"F{row_index}"] = price
 
         row_index += 1
+
+    sheet["E9"].value = str(quantity_sum)
+    
 
     name = os.path.join("tables", f'{client_code}.xlsx')
     wb.save(name)

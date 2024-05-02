@@ -33,13 +33,16 @@ async def items_upload(message: types.Message, state: FSMContext):
             check_caption = caption.split(",")
             if len(check_caption) == 4:
                 link, comment, quantity, price = check_caption
-                photo = await photo_message.photo[-1].download()
+                if quantity.is_digit():
+                    photo = await photo_message.photo[-1].download()
 
-                products.append([photo.name, link, comment, quantity, price])
-                await state.update_data(products=products,
-                                        count=data.get('count', 0) + 1)
-                await message.answer(f'Товар #{data.get("count", 0)} успешно сохранён. Если нужно больше фото, то отправьте фото с подписью. '
-                                     'Либо нажмите на кнопку, чтобы сформировать эксель документ', reply_markup=table_keyboard())
+                    products.append([photo.name, link, comment, quantity, price])
+                    await state.update_data(products=products,
+                                            count=data.get('count', 0) + 1)
+                    await message.answer(f'Товар #{data.get("count", 0)} успешно сохранён. Если нужно больше фото, то отправьте фото с подписью. '
+                                        'Либо нажмите на кнопку, чтобы сформировать эксель документ', reply_markup=table_keyboard())
+                else:
+                    await message.answer(texts[26]["text"])
             else:
                 await message.answer(texts[26]["text"])
         else:
