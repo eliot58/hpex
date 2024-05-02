@@ -10,16 +10,19 @@ async def main():
     buttons = await get_buttons()
 
 def phone_tied_kb():
+    asyncio.run(main())
     rp = ReplyKeyboardMarkup(resize_keyboard=True)
     rp.add(KeyboardButton(buttons[2]["text"]), KeyboardButton(buttons[3]["text"]))
     return rp
 
 def is_correct_rb():
+    asyncio.run(main())
     rp = ReplyKeyboardMarkup(resize_keyboard=True)
     rp.add(KeyboardButton(buttons[0]["text"]), KeyboardButton(buttons[1]["text"]))
     return rp
 
 def is_correct_ik():
+    asyncio.run(main())
     ik = InlineKeyboardMarkup()
     ik.add(InlineKeyboardButton(buttons[0]["text"], callback_data=cb_main.new(action="is_correct")), InlineKeyboardButton(buttons[1]["text"], callback_data=cb_main.new(action="is_not_correct")))
            
@@ -27,12 +30,14 @@ def is_correct_ik():
 
 
 def qr_code_kb():
+    asyncio.run(main())
     rp = ReplyKeyboardMarkup(resize_keyboard=True)
     rp.add(KeyboardButton(buttons[4]["text"]))
     return rp
 
 
 def main_keyboard():
+    asyncio.run(main())
     ik = InlineKeyboardMarkup()
     ik.add(InlineKeyboardButton(buttons[13]["text"], url="https://t.me/Georg_opt2"), 
            InlineKeyboardButton(buttons[14]["text"], callback_data=cb_main.new(action="control_table")))
@@ -44,12 +49,14 @@ def main_keyboard():
     return ik
 
 def back_to_main_kb():
+    asyncio.run(main())
     ik = InlineKeyboardMarkup()
     ik.add(InlineKeyboardButton(buttons[5]["text"], callback_data=cb_main.new(action="main")))
            
     return ik
 
 def fill_address_kb():
+    asyncio.run(main())
     ik = InlineKeyboardMarkup()
     ik.add(InlineKeyboardButton(buttons[8]["text"], callback_data=cb_main.new(action="factory")))
     ik.add(InlineKeyboardButton(buttons[9]["text"], callback_data=cb_main.new(action="1688")))
@@ -61,6 +68,7 @@ def fill_address_kb():
     return ik
 
 def table_keyboard():
+    asyncio.run(main())
     ik = InlineKeyboardMarkup()
     ik.add(InlineKeyboardButton(buttons[6]["text"], callback_data=cb_main.new(action="get_table")))
     ik.add(InlineKeyboardButton(buttons[7]["text"], callback_data=cb_main.new(action="delete_item")))

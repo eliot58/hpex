@@ -22,7 +22,7 @@ async def cmd_start(message: types.Message, state: FSMContext):
             await bot.send_chat_action(message.chat.id, 'typing')
             await asyncio.sleep(uniform(1, 3))
 
-        fin_text = texts[3]["text"]
+        fin_text = texts[33]["text"]
         await message.answer(fin_text, reply_markup=main_keyboard())
 
 
