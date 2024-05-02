@@ -28,7 +28,7 @@ def is_valid_date(date_string):
     
 
 def validate_code(code):
-    pattern = re.compile(r'^[A-Za-z]{2}\d{4}$')
+    pattern = re.compile(r'^KF-[A-Za-z]{2}\d{4}$')
     
     if re.match(pattern, code):
         return True

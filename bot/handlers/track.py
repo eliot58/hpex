@@ -11,10 +11,10 @@ from aiogram.types import InputFile
 
 async def code_input(message: types.Message, state: FSMContext):
     texts = await get_texts()
-    if validate_code(message.text):
-        client = (await get_client("KF-"+message.text)) or (await get_agent_by_code("KF-"+message.text))
+    if validate_code(message.text.upper()):
+        client = (await get_client(message.text.upper())) or (await get_agent_by_code(message.text.upper()))
         if client:
-            await state.update_data(client_code=message.text)
+            await state.update_data(client_code=message.text.upper())
             await state.set_state(TrackStates.items_upload)
             await message.answer(texts[32]["text"])
         else:
