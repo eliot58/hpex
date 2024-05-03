@@ -70,10 +70,11 @@ async def is_correct(call: types.CallbackQuery, state: FSMContext):
                         "<b>Вот данные для выкупа вашего товара на наш склад:</b>\n" \
                         f"Клиентский код : <code>{data['code']}</code>\n"\
                         f"Имя получателя : {data['code']}\n"\
-                        "Номер получателя : <code>18316186360</code>\n"\
-                        "Индекс : <code>528200</code>\n"\
-                        "Адрес : <code>广东省 佛山市 南海区</code>\n"\
-                        f"Комментарий : <code>广东省佛山市南海区里水镇文教路18号 柏华工 业园D17润泽国际-{data['code']}</code>"
+                        "Номер получателя : <code>18664541313</code>\n"\
+                        "Индекс : <code>510180</code>\n"\
+                        "Адрес : <code>广东省 佛山市 南海区 矿泉街道</code>\n"\
+                        f"Комментарий : <code>荔德路318号汇富商贸中心 A7-103 {data['code']}</code>"
+    
     
     await call.message.answer(registartion_text, reply_markup=back_to_main_kb())
 
