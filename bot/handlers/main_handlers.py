@@ -57,7 +57,6 @@ async def city_input(message: types.Message, state: FSMContext):
             f"ФИО: {data['full_name']}\n"\
             f"Номер телефона: {data['phone']}\n"\
             f"Город: {data['city']}\n"
-    await bot.send_message(-1002015553544, text)
     await message.answer(text, reply_markup=is_correct_ik())
 
 async def is_correct(call: types.CallbackQuery, state: FSMContext):
@@ -74,6 +73,14 @@ async def is_correct(call: types.CallbackQuery, state: FSMContext):
                         "Индекс : <code>510180</code>\n"\
                         "Адрес : <code>广东省 佛山市 南海区 矿泉街道</code>\n"\
                         f"Комментарий : <code>荔德路318号汇富商贸中心 A7-103 {data['code']}</code>"
+    
+
+    text = f"Данные клиента :\n\n"\
+            f"Код клиента: {data['code']}\n"\
+            f"ФИО: {data['full_name']}\n"\
+            f"Номер телефона: {data['phone']}\n"\
+            f"Город: {data['city']}\n"
+    await bot.send_message(-1002015553544, text)
     
     
     await call.message.answer(registartion_text, reply_markup=back_to_main_kb())
