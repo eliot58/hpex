@@ -34,10 +34,10 @@ def qr_code_kb():
 def main_keyboard():
     buttons = get_buttons()
     ik = InlineKeyboardMarkup()
-    ik.add(InlineKeyboardButton(buttons[13]["text"], url="https://t.me/Georg_opt2"), 
-           InlineKeyboardButton(buttons[14]["text"], callback_data=cb_main.new(action="control_table")))
-    ik.add(InlineKeyboardButton(buttons[15]["text"], callback_data=cb_main.new(action="ransom")),
+    ik.add(InlineKeyboardButton(buttons[13]["text"], url="https://t.me/Kung_Fu_exchange"),
            InlineKeyboardButton(buttons[16]["text"], callback_data=cb_main.new(action="fill_address")))
+    ik.add(InlineKeyboardButton(buttons[15]["text"], callback_data=cb_main.new(action="ransom")),
+           InlineKeyboardButton(buttons[14]["text"], callback_data=cb_main.new(action="control_table")))
     ik.add(InlineKeyboardButton(buttons[17]["text"], callback_data=cb_main.new(action="register")))
            
            

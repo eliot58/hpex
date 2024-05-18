@@ -1,3 +1,5 @@
+import asyncio
+from random import uniform
 from aiogram import types, Dispatcher
 from bot.states import FormStates
 from aiogram.dispatcher import FSMContext
@@ -127,7 +129,13 @@ async def is_correct(message: types.Message, state: FSMContext):
             await bot.send_message(-1002015553544, text)
         await state.set_state("*")
         await message.answer(texts[14]["text"], reply_markup=ReplyKeyboardRemove())
-        await message.answer(texts[15]["text"], reply_markup=main_keyboard())
+        for text in texts[:3]:
+            await message.answer(text["text"])
+            await bot.send_chat_action(message.chat.id, 'typing')
+            await asyncio.sleep(uniform(1, 3))
+
+        fin_text = texts[33]["text"]
+        await message.answer(fin_text, reply_markup=main_keyboard())
     elif message.text == "Нет исправить":
         await state.set_state(FormStates.full_name_input)
         await message.answer(texts[16]["text"], reply_markup=ReplyKeyboardRemove())
