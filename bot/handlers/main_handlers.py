@@ -71,7 +71,7 @@ async def is_correct(call: types.CallbackQuery, state: FSMContext):
                         f"Имя получателя : {data['code']}\n"\
                         "Номер получателя : <code>18664541313</code>\n"\
                         "Индекс : <code>510180</code>\n"\
-                        "Адрес : <code>广东省 佛山市 南海区 矿泉街道</code>\n"\
+                        "Адрес : <code>广东省广州市 越秀区 矿泉街道</code>\n"\
                         f"Комментарий : <code>荔德路318号汇富商贸中心 A7-103 {data['code']}</code>"
     
 
